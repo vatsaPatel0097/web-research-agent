@@ -9,6 +9,8 @@ from config.settings import (
     MAX_TOPIC_RETRY,
     MAX_ARTICLE_RETRY,
 )
+from agents.scraper_agent import scrape_url
+
 
 
 def topic_node(state: GraphState) -> GraphState:
@@ -27,7 +29,9 @@ def retry_topic_node(state: GraphState) -> GraphState:
 
 def search_node(state: GraphState) -> GraphState:
     urls = search_web(state["input"])
+    print(f"[SEARCH] Found {len(urls)} URLs")
     return {"urls": urls}
+
 
 
 def writer_node(state: GraphState) -> GraphState:
@@ -62,7 +66,9 @@ def build_graph():
     )
 
     graph.add_edge("retry_topic_node", "topic_node")
-    graph.add_edge("search_node", "writer_node")
+    graph.add_node("scrape_node", scrape_node)
+    graph.add_edge("search_node", "scrape_node")
+    graph.add_edge("scrape_node", "writer_node")
 
     graph.add_conditional_edges(
         "writer_node",
@@ -73,3 +79,13 @@ def build_graph():
     graph.add_edge("retry_article_node", "writer_node")
 
     return graph.compile()
+
+def scrape_node(state: GraphState) -> GraphState:
+    documents = []
+
+    for url in state["urls"]:
+        text = scrape_url(url)
+        if text and len(text.split()) > 50:
+            documents.append(text)
+
+    return {"documents": documents}
