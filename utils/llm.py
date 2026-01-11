@@ -1,7 +1,7 @@
 import subprocess
 
 
-def generate(prompt: str, model: str = "mistral") -> str:
+def generate(prompt: str, model: str = "phi") -> str:
     result = subprocess.run(
         ["ollama", "run", model],
         input=prompt,

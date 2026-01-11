@@ -1,6 +1,7 @@
-from typing import TypedDict
+from typing import TypedDict, List
 
 
 class GraphState(TypedDict):
     input: str
-    output: str
+    subtopics: List[str]
+    article: str
