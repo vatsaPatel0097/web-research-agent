@@ -2,18 +2,25 @@ import sys
 from graph.graph import build_graph
 
 
-def main():
+def run(topic: str):
     graph = build_graph()
-
-    topic = sys.argv[1] if len(sys.argv) > 1 else "Artificial Intelligence"
-
-    result = graph.invoke({
+    return graph.invoke({
         "input": topic,
         "subtopics": [],
+        "urls": [],
         "article": "",
         "topic_retry": 0,
         "article_retry": 0,
     })
+
+
+def main():
+    topic = sys.argv[1] if len(sys.argv) > 1 else "Machine Learning in Healthcare"
+    result = run(topic)
+
+    print("\n===== SOURCES =====")
+    for url in result["urls"]:
+        print(url)
 
     print("\n===== GENERATED ARTICLE =====\n")
     print(result["article"])
