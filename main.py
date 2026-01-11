@@ -7,7 +7,13 @@ def main():
 
     topic = sys.argv[1] if len(sys.argv) > 1 else "Artificial Intelligence"
 
-    result = graph.invoke({"input": topic})
+    result = graph.invoke({
+        "input": topic,
+        "subtopics": [],
+        "article": "",
+        "topic_retry": 0,
+        "article_retry": 0,
+    })
 
     print("\n===== GENERATED ARTICLE =====\n")
     print(result["article"])
