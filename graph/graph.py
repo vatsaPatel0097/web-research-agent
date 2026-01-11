@@ -10,6 +10,7 @@ from config.settings import (
     MAX_ARTICLE_RETRY,
 )
 from agents.scraper_agent import scrape_url
+from agents.source_filter_agent import filter_sources
 
 
 
@@ -56,6 +57,8 @@ def build_graph():
     graph.add_node("search_node", search_node)
     graph.add_node("writer_node", writer_node)
     graph.add_node("retry_article_node", retry_article_node)
+    graph.add_node("filter_node", filter_node)
+
 
     graph.set_entry_point("topic_node")
 
@@ -68,7 +71,9 @@ def build_graph():
     graph.add_edge("retry_topic_node", "topic_node")
     graph.add_node("scrape_node", scrape_node)
     graph.add_edge("search_node", "scrape_node")
-    graph.add_edge("scrape_node", "writer_node")
+    graph.add_edge("scrape_node", "filter_node")
+    graph.add_edge("filter_node", "writer_node")
+
 
     graph.add_conditional_edges(
         "writer_node",
@@ -89,3 +94,8 @@ def scrape_node(state: GraphState) -> GraphState:
             documents.append(text)
 
     return {"documents": documents}
+
+def filter_node(state: GraphState) -> GraphState:
+    filtered = filter_sources(state["documents"])
+    return {"filtered_docs": filtered}
+

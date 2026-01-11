@@ -18,8 +18,8 @@ def main():
     topic = sys.argv[1] if len(sys.argv) > 1 else "Machine Learning in Healthcare"
     result = run(topic)
 
-    print("\n===== SCRAPED SOURCES =====")
-    for i, doc in enumerate(result["documents"], start=1):
+    print("\n===== FILTERED SOURCES =====")
+    for i, doc in enumerate(result["filtered_docs"], start=1):
         print(f"Source {i}: {len(doc.split())} words")
 
     print("\n===== GENERATED ARTICLE =====\n")
